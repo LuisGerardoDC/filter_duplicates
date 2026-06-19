@@ -1,0 +1,7 @@
+# Standard ignores
+.DS_Store
+.vscode/
+*.log
+
+# Project-specific ignore
+Code Assessment - Find Duplicates Input - SampleCodecsv (10).csv
