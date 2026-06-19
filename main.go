@@ -10,13 +10,13 @@ import (
 func main() {
 
 	records, err := loadRecords("Code Assessment - Find Duplicates Input - SampleCodecsv (10).csv")
-	fmt.Println("Records loaded:", len(records))
+
 	if err != nil {
 		fmt.Println("Error opening file:", err)
 		return
 	}
 
-	duplicates, err := findDuplicates(records)
+	duplicates, err := FindDuplicates(records)
 
 	if err != nil {
 		fmt.Println("Error finding duplicates:", err)
@@ -27,17 +27,20 @@ func main() {
 
 }
 
-func findDuplicates(records []Record) ([]Response, error) {
+func FindDuplicates(records []Record) ([]Response, error) {
 	response := []Response{}
 
-	for i, record := range records {
-		for j := i + 1; j < len(records); j++ {
-			matchPercentage := hasMatch(record, records[j])
+	for i := 0; i < len(records); i++ {
+		record := records[i]
 
+		for j := i + 1; j < len(records); j++ {
+			compareRecord := records[j]
+			matchPercentage := HasMatch(record, compareRecord)
 			if matchPercentage > 20 {
+				records = append(records[:j], records[j+1:]...)
 				response = append(response, Response{
 					ContactIDSource: record.ContactID,
-					ContactIDMatch:  records[j].ContactID,
+					ContactIDMatch:  compareRecord.ContactID,
 					Acurracy:        matchPercentage,
 				})
 			}
@@ -47,7 +50,7 @@ func findDuplicates(records []Record) ([]Response, error) {
 	return response, nil
 }
 
-func hasMatch(record1, record2 Record) int {
+func HasMatch(record1, record2 Record) int {
 	result := 0
 
 	result += PercentageMatch(record1.Name, record2.Name)
@@ -56,7 +59,7 @@ func hasMatch(record1, record2 Record) int {
 	result += PercentageMatch(record1.PostalZip, record2.PostalZip)
 	result += PercentageMatch(record1.Address, record2.Address)
 
-	return result / 6
+	return result / 5
 }
 
 func PercentageMatch(str1, str2 string) int {
