@@ -137,36 +137,39 @@ func TestFindDuplicates(t *testing.T) {
 		{ContactID: "7", Name: "Marc", Name1: "Reyes", PostalZip: "67890", Email: "marco.reyes@example.com", Address: "99 Palm Dr"},
 		{ContactID: "8", Name: "Helen", Name1: "Russo", PostalZip: "55555", Email: "h.russo@epsilon.com", Address: "5 Epsilon Way"},
 		{ContactID: "9", Name: "Ma", Name1: "Reyes", PostalZip: "67890", Email: "marco.reyes@example.com", Address: "99 Palm Dr"},
+		{ContactID: "10", Name: "Carina", Name1: "Torr", PostalZip: "39777", Email: "carina.torres@example.com", Address: "449 Tellus Rd"},
+		{ContactID: "11", Name: "Bruce", Name1: "Kimura", PostalZip: "22222", Email: "b.kimura@beta.com", Address: "2 Beta Ave"},
+		{ContactID: "12", Name: "Carina", Name1: "Torr", PostalZip: "39777", Email: "carina.torres@example.com", Address: "448 Tellus Rd"},
 	}
 
 	Tests := []struct {
-		name        string
-		records     []Record
-		resultCount int
-		results     []Response
+		name    string
+		records []Record
+		results []Response
 	}{
 		{
-			name:        "No duplicates",
-			records:     recordsNoDuplicates,
-			resultCount: 0,
-			results:     []Response{},
+			name:    "No duplicates",
+			records: recordsNoDuplicates,
+			results: []Response{},
 		},
 		{
-			name:        "One duplicate",
-			records:     recordsWithOneDuplicate,
-			resultCount: 2,
+			name:    "One duplicate",
+			records: recordsWithOneDuplicate,
 			results: []Response{
 				{ContactIDSource: "1", ContactIDMatch: "3", Acurracy: 96},
 				{ContactIDSource: "1", ContactIDMatch: "6", Acurracy: 92},
 			},
 		},
 		{
-			name:        "Multiple duplicates",
-			records:     recordsWithMultipleDuplicates,
-			resultCount: 4,
+			name:    "Multiple duplicates",
+			records: recordsWithMultipleDuplicates,
+
 			results: []Response{
 				{ContactIDSource: "1", ContactIDMatch: "3", Acurracy: 96},
 				{ContactIDSource: "1", ContactIDMatch: "6", Acurracy: 92},
+				{ContactIDSource: "1", ContactIDMatch: "10", Acurracy: 84},
+				{ContactIDSource: "1", ContactIDMatch: "12", Acurracy: 67},
+				{ContactIDSource: "2", ContactIDMatch: "11", Acurracy: 100},
 				{ContactIDSource: "4", ContactIDMatch: "7", Acurracy: 96},
 				{ContactIDSource: "4", ContactIDMatch: "9", Acurracy: 88},
 			},
@@ -177,7 +180,7 @@ func TestFindDuplicates(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			results, err := FindDuplicates(test.records)
 			assert.NoError(t, err)
-			assert.Equal(t, test.resultCount, len(results))
+			assert.Equal(t, len(test.results), len(results))
 			assert.Equal(t, test.results, results)
 		})
 	}
