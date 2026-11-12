@@ -1,3 +1,5 @@
+Base
+
 # Duplicate Contact Finder
 
 A command-line tool written in Go that detects duplicate contact records within a CSV file using a field-level string similarity algorithm. Records are compared across five fields and flagged as duplicates when their average similarity exceeds a configurable threshold.
